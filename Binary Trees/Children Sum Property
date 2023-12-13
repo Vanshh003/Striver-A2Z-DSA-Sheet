@@ -1,0 +1,67 @@
+https://www.codingninjas.com/studio/problems/children-sum-property_8357239?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+/*
+Following is the class structure of the Node class:
+
+class Node
+{
+public:
+    int data;
+    Node *left, *right;
+    Node()
+    {
+        this->data = 0;
+        left = NULL;
+    }
+    Node(int data)
+    {
+        this->data = data; 
+        this->left = NULL;
+        this->right = NULL;
+    }
+    Node(int data, Node* left, Node* right)
+    {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+*/
+#include<bits/stdc++.h>
+
+bool isleaf(Node* root) {  
+    if(root->left == NULL && root->right == NULL) return true;  
+    return false;
+}
+
+bool isParentSum(Node* root) {   
+    queue<Node*> q;
+    q.push(root);
+
+    bool ans = true;
+    while(!q.empty()) {
+        Node* node = q.front();
+        q.pop();
+
+        if(!isleaf(node)) {
+            int a = 0;
+            
+            if(node->left) {
+                a = node->left->data;
+                q.push(node->left);
+            }
+
+            if(node->right) {
+                a += node->right->data;
+                q.push(node->right);
+            }
+
+            if(a != node->data) ans = false;
+        }
+    }
+
+    return ans; 
+}
