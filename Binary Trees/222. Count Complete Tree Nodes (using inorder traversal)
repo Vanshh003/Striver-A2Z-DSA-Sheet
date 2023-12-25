@@ -15,6 +15,9 @@ https://leetcode.com/problems/count-complete-tree-nodes/description/
  * };
  */
 
+// TC: O(n)
+// SC: O(h) (since it is a complete binary tree the height of the binary tree at the worst case will be logN)
+
 class Solution {
 public:
     void inorder(TreeNode* root, int &count) {
