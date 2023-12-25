@@ -1,0 +1,103 @@
+https://www.codingninjas.com/studio/problems/time-to-burn-tree_1469067?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+/************************************************************
+
+    Following is the Binary Tree node structure
+
+    class BinaryTreeNode {
+        public : 
+            T data;
+            BinaryTreeNode<T> *left;
+            BinaryTreeNode<T> *right;
+
+        BinaryTreeNode(T data) {
+            this -> data = data;
+            left = NULL;
+            right = NULL;
+        }
+    };
+
+************************************************************/
+
+// TC: O(N)+O(N)    (bfs to map parents i.e. level order traversal + bfs function to burn adjacent nodes) (assuming that the map to be working at O(1))
+// SC: O(N)     (using an external map + using an external queue)
+
+int findMaxDistance(map<BinaryTreeNode<int>*, BinaryTreeNode<int>*> &map, BinaryTreeNode<int>* target) {
+    queue<BinaryTreeNode<int>*> q;
+    q.push(target);
+
+    map<BinaryTreeNode<int>*, int> visited;
+    visited[target] = 1;
+
+    int time = 0;
+    while(!q.empty()) {
+        int size = q.size();
+        int flag = 0;
+
+        for(int i=0; i<size; i++) {
+            auto node = q.front();
+            q.pop();
+
+            if(node->left && !visited[node->left]) {
+                flag = 1;
+                visited[node->left] = 1;
+                q.push(node->left);
+            }
+
+            if(node->right && !visited[node->right]) {
+                flag = 1;
+                visited[node->right] = 1;
+                q.push(node->right);
+            }
+
+            if(map[node] && !visited[map[node]]) {
+                flag = 1;
+                visited[map[node]] = 1;
+                q.push(map[node]);
+            }
+        }
+
+        if(flag) time++;
+    }
+
+    return time;
+}
+
+BinaryTreeNode<int>* bfsToMapParents(BinaryTreeNode<int>* root , map<BinaryTreeNode<int>*, BinaryTreeNode<int>*> &map, int start) {
+    queue<BinaryTreeNode<int>*> q;
+    q.push(root);
+
+    BinaryTreeNode<int>* res;
+
+    while(!q.empty()) {
+        auto node = q.front();
+
+        if(node->data == start) res = node;
+        q.pop();
+
+        if(node->left) {
+            map[node->left] = node;
+            q.push(node->left);
+        }
+
+        if(node->right) {
+            map[node->right] = node;
+            q.push(node->right);
+        }
+    }
+
+    return res;
+}
+
+int timeToBurnTree(BinaryTreeNode<int>* root, int start) {
+    map<BinaryTreeNode<int>*, BinaryTreeNode<int>*> map;
+    
+    BinaryTreeNode<int>* target = bfsToMapParents(root, map, start);
+
+    int maxi = findMaxDistance(map, target);
+
+    return maxi;
+}
