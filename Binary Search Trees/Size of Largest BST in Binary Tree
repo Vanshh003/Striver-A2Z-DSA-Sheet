@@ -1,0 +1,47 @@
+https://www.codingninjas.com/studio/problems/size-of-largest-bst-in-binary-tree_893103?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+/*
+    Following is Binary Tree Node structure:
+    class TreeNode
+    {
+    public:
+        int data;
+        TreeNode *left, *right;
+        TreeNode() : data(0), left(NULL), right(NULL) {}
+        TreeNode(int x) : data(x), left(NULL), right(NULL) {}
+        TreeNode(int x, TreeNode *left, TreeNode *right) : data(x), left(left), right(right) {}
+    };
+*/
+
+class nodeValue {
+public:
+    int maxNode;
+    int minNode;
+    int maxSize;
+
+    nodeValue(int minNode, int maxNode, int maxSize) {
+        this->maxNode = maxNode;
+        this->minNode = minNode;
+        this->maxSize = maxSize;    
+    }
+};
+
+nodeValue largestBstSubtreeHelper(TreeNode* root) {
+    if(!root) return nodeValue(INT_MAX, INT_MIN, 0);
+
+    auto left = largestBstSubtreeHelper(root->left);
+    auto right = largestBstSubtreeHelper(root->right);
+
+    if(left.maxNode < root->data && root->data < right.minNode) {
+        return nodeValue(min(root->data, left.minNode), max(root->data, right.maxNode), left.maxSize + right.maxSize + 1);
+    }
+
+    return nodeValue(INT_MIN, INT_MAX, max(left.maxSize, right.maxSize));
+}
+
+int largestBST(TreeNode* root){
+    return largestBstSubtreeHelper(root).maxSize;
+}
