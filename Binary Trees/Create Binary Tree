@@ -1,0 +1,55 @@
+https://www.codingninjas.com/studio/problems/create-binary-tree_8360671?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+/*
+Following is the class structure of the Node class:
+
+class Node {
+public:
+    int data;
+    Node *left, *right;
+    Node() {
+        this->data = 0;
+        left = NULL;
+    }
+    Node(int data) {
+        this->data = data; 
+        this->left = NULL;
+        this->right = NULL;
+    }
+    Node(int data, Node* left, Node* right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+*/
+
+//TC: O(N)
+//SC: O(N)
+Node* createTree(vector<int>& arr) {
+    queue<Node*> q;
+
+    Node* root = new Node(arr[0]);
+    q.push(root);
+
+    int i = 0;
+    while(!q.empty() && i < 3) {
+        Node* temp = q.front();
+        q.pop();
+
+        Node* left = new Node(arr[2*i + 1]);
+        temp->left = left;
+        q.push(left);
+
+        Node* right = new Node(arr[2*i + 2]);
+        temp->right = right;
+        q.push(right);
+     
+        i++;
+    }
+
+    return root;
+}
