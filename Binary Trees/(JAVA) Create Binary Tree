@@ -1,0 +1,68 @@
+https://www.codingninjas.com/studio/problems/create-binary-tree_8360671?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+/****************************************************************
+
+ Following is the class structure of the Node class:
+
+ class Node {
+     public int data;
+     public Node left;
+     public Node right;
+
+     Node()
+     {
+         this.data = 0;
+         this.left = null;
+         this.right = null;
+     }
+
+     Node(int data)
+     {
+         this.data = data;
+         this.left = null;
+         this.right = null;
+     }
+
+     Node(int data, Node left, Node right)
+     {
+         this.data = data;
+         this.left = left;
+         this.right = right;
+     }
+ }
+
+ *****************************************************************/
+
+//TC: O(N)
+//SC: O(N)
+import java.util.Queue;
+import java.util.LinkedList;
+public class Solution {
+    public static Node createTree(int []arr){
+        Queue< Node > q = new LinkedList<>();
+        Node root = new Node(arr[0]);
+        
+        q.offer(root);
+        int i = 0;
+
+        while (!q.isEmpty() && i < 3) {
+            Node t = q.peek();
+            q.poll();
+
+            Node left = new Node(arr[2 * i + 1]);
+            t.left = left;
+            q.offer(left);
+
+            Node right = new Node(arr[2 * i + 2]);
+            t.right = right;
+            q.offer(right);
+            
+            i++;
+        }
+        
+        return root;
+    }
+}
