@@ -1,0 +1,21 @@
+https://www.codingninjas.com/studio/problems/frog-jump_3621012?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+//      TABULATION
+#include <bits/stdc++.h> 
+int frogJump(int n, vector<int> &heights) {
+    vector<int> dp(n, 0);
+    dp[0] = 0;
+
+    for(int i=1; i<n; i++) {
+        int onejump = dp[i-1] + abs(heights[i] - heights[i-1]);
+        int twojump = INT_MAX;
+        if(i>1) twojump = dp[i-2] + abs(heights[i] - heights[i-2]);
+
+        dp[i] = min(onejump, twojump);
+    }
+
+    return dp[n-1];
+}
