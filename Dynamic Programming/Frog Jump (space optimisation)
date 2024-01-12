@@ -1,0 +1,24 @@
+https://www.codingninjas.com/studio/problems/frog-jump_3621012?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+//      SPACE OPTIMISATION
+#include <bits/stdc++.h> 
+int frogJump(int n, vector<int> &heights) {
+    int prev = 0;
+    int prev2 = 0;
+
+    for(int i=1; i<n; i++) {
+        int onejump = prev + abs(heights[i] - heights[i-1]);
+        int twojump = INT_MAX;
+        if(i>1) twojump = prev2 + abs(heights[i] - heights[i-2]);
+
+        int curr = min(onejump, twojump);
+
+        prev2 = prev;
+        prev = curr;
+    }
+
+    return prev;
+}
