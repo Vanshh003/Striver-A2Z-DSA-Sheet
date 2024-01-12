@@ -1,0 +1,20 @@
+https://www.codingninjas.com/studio/problems/frog-jump_3621012?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+//      RECURSION   
+#include <bits/stdc++.h> 
+int solve(int n, vector<int> &heights) {
+    if(n == 0) return 0;
+
+    int onejump = solve(n-1, heights) + abs(heights[n] - heights[n-1]);
+    int twojump = INT_MAX;
+    if(n>1) twojump = solve(n-2, heights) + abs(heights[n] - heights[n-2]);
+
+    return min(onejump, twojump);
+}
+
+int frogJump(int n, vector<int> &heights) {
+    return solve(n-1, heights);
+}
