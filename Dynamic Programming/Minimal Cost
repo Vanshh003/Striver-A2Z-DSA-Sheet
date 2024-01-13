@@ -1,0 +1,75 @@
+https://www.codingninjas.com/studio/problems/minimal-cost_8180930?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+//      RECURSION
+int solve(int n, int k, vector<int> &height) {
+    if(n == 0) return 0;
+
+    int minsteps = INT_MAX;
+    for(int i=1; i<=k; i++) {
+        if(n-i >= 0) {
+            int jump = solve(n-i, k, height) + abs(height[n] - height[n-i]);
+            minsteps = min(minsteps, jump);
+        }
+    }
+
+    return minsteps;
+}
+
+int minimizeCost(int n, int k, vector<int> &height){
+    return solve(n-1, k, height);
+}
+
+
+
+
+// TC: O(n*k)
+// SC: O(n) + O(n)
+//      MEMOIZATION
+int solve(int n, int k, vector<int> &height, vector<int> &dp) {
+    if(n == 0) return 0;
+    if(dp[n] != -1) return dp[n];
+
+    int minsteps = INT_MAX;
+    for(int i=1; i<=k; i++) {
+        if(n-i >= 0) {
+            int jump = solve(n-i, k, height, dp) + abs(height[n] - height[n-i]);
+            minsteps = min(minsteps, jump);
+        }
+    }
+
+    return dp[n] = minsteps;
+}
+
+int minimizeCost(int n, int k, vector<int> &height) {
+    vector<int> dp(n, -1);
+    return solve(n-1, k, height, dp);
+}
+
+
+
+
+// TC: O(n*k)
+// SC: O(n)
+//      TABULATION
+int minimizeCost(int n, int k, vector<int> &height) {
+    vector<int> dp(n, 0);
+    dp[0] = 0;
+
+    for(int i=1; i<n; i++) {
+        int ans = INT_MAX;
+        
+        for(int j=1; j<=k; j++) {
+            if(i-j >= 0) {
+                int jump = dp[i - j] + abs(height[i] - height[i - j]);
+                ans = min(ans, jump);
+            }
+        }
+
+        dp[i] = ans;
+    }
+
+    return dp[n-1];
+}
