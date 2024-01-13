@@ -1,0 +1,23 @@
+https://www.codingninjas.com/studio/problems/minimal-cost_8180930?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+//      RECURSION
+int solve(int n, int k, vector<int> &height) {
+    if(n == 0) return 0;
+
+    int minsteps = INT_MAX;
+    for(int i=1; i<=k; i++) {
+        if(n-i >= 0) {
+            int jump = solve(n-i, k, height) + abs(height[n] - height[n-i]);
+            minsteps = min(minsteps, jump);
+        }
+    }
+
+    return minsteps;
+}
+
+int minimizeCost(int n, int k, vector<int> &height){
+    return solve(n-1, k, height);
+}
