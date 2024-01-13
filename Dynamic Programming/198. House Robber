@@ -12,7 +12,7 @@ public:
         if(n == 0) return nums[n];
         if(n<0) return 0;
 
-        int pick = pick = nums[n] + solve(n-2, nums);
+        int pick = nums[n] + solve(n-2, nums);
         int nopick = solve(n-1, nums);
 
         return max(pick, nopick);
