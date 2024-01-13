@@ -1,0 +1,104 @@
+https://leetcode.com/problems/house-robber/description/
+
+
+
+
+//      RECURSION
+
+// TC: O(2^n)
+class Solution {
+public:
+    int solve(int n, vector<int> &nums) {
+        if(n == 0) return nums[n];
+        if(n<0) return 0;
+
+        int pick = pick = nums[n] + solve(n-2, nums);
+        int nopick = solve(n-1, nums);
+
+        return max(pick, nopick);
+    }
+
+    int rob(vector<int>& nums) {
+        return solve(nums.size()-1, nums);
+    }
+};
+
+
+
+
+//      MEMOIZATION
+
+// TC: O(n)
+// SC: O(n) + O(n)
+class Solution {
+public:
+    int solve(int n, vector<int> &nums, vector<int> &dp) {
+        if(n == 0) return nums[n];
+        if(n<0) return 0;
+
+        if(dp[n] != -1) return dp[n];
+
+        int pick = pick = nums[n] + solve(n-2, nums, dp);
+        int nopick = solve(n-1, nums, dp);
+
+        return dp[n] = max(pick, nopick);
+    }
+
+    int rob(vector<int>& nums) {
+        vector<int> dp(nums.size(), -1);
+        return solve(nums.size()-1, nums, dp);
+    }
+};
+
+
+
+
+//      TABULATION
+
+// TC: O(n)
+// SC: O(n)
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        vector<int> dp(nums.size(), -1);
+        dp[0] = nums[0];
+
+        for(int i=1; i<nums.size(); i++) {
+            int pick = nums[i];
+            if(i>1) pick += dp[i-2];
+            int notpick = dp[i-1];
+
+            dp[i] = max(pick, notpick);
+        }
+
+        return dp[nums.size()-1];
+    }
+};
+
+
+
+
+//      SPACE OPTIMISED
+
+// TC: O(n)
+// SC: O(1)
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int prev = nums[0];
+        int prev2 = 0;
+
+        for(int i=1; i<nums.size(); i++) {
+            int pick = nums[i];
+            if(i>1) pick += prev2;
+            int notpick = prev;
+
+            int curr = max(pick, notpick);
+
+            prev2 = prev;
+            prev = curr;
+        }
+
+        return prev;
+    }
+};
