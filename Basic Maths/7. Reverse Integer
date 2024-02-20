@@ -1,0 +1,33 @@
+https://leetcode.com/problems/reverse-integer/description/
+
+
+
+
+class Solution {
+public:
+    // int reverse(int x) {
+    //     int n = x;
+    //     string str = to_string(abs(n));
+    //     ::reverse(str.begin(), str.end());
+
+    //     int ans = stoi(str);
+    //     if(x < 0) ans -= 2*ans;
+
+    //     return ans;
+    // }
+
+
+
+
+
+    int reverse(int x) {
+        long r = 0;      
+        while(x) { 
+            r = r*10 + x%10; 
+            x = x/10;     
+        }
+
+        if(r > INT_MAX || r < INT_MIN) return 0;  
+        return int(r); 
+    }
+};
