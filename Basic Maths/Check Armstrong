@@ -1,0 +1,28 @@
+https://www.codingninjas.com/studio/problems/check-armstrong_589?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+// TC: O(n)
+// SC: O(1)
+
+bool checkArmstrong(int n) {
+	int x = n;
+	int num = n;
+	int count = 0;
+	int ans = 0;
+
+	// count = log10(n)+1;
+	while(num != 0) {
+		count++;
+		num /= 10;
+	}
+
+	while(n){
+		int digit = n%10;
+		ans += pow(digit, count);
+		n /= 10;
+	}
+	
+	return (x == ans)? true : false;
+}
