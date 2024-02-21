@@ -1,0 +1,145 @@
+https://www.codingninjas.com/studio/problems/partitions-with-given-difference_3751628?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+//					RECURSION
+// TC: O(2^n)
+// SC: O(n)
+
+#include <bits/stdc++.h>
+int mod = (int)(1e9 + 7);
+
+int solve(int n, int target, vector<int> &arr) {
+    if(n == 0) {
+		if(target == 0 && arr[0] == 0) return 2;
+		if(target == 0 || target == arr[0]) return 1;
+		return 0;
+	}
+
+    int notpick = solve(n-1, target, arr);
+    int pick = 0;
+    if(arr[n] <= target) pick = solve(n-1, target-arr[n], arr);
+
+    return (pick + notpick) % mod;
+}
+
+int countPartitions(int n, int d, vector<int> &arr) {
+    int sum = accumulate(arr.begin(), arr.end(), 0);
+    if(sum - d < 0 || (sum - d) % 2 != 0) return 0;
+    
+    int target = (sum - d)/2;
+
+	return solve(n-1, target, arr);   
+}
+
+
+
+
+
+//					MEMOISATION
+// TC: O(n * target)
+// SC: O(n * target) + O(n)
+
+#include <bits/stdc++.h>
+int mod = (int)(1e9 + 7);
+
+int solve(int n, int target, vector<int> &arr, vector<vector<int>> &dp) {
+    if(n == 0) {
+		if(target == 0 && arr[0] == 0) return 2;
+		if(target == 0 || target == arr[0]) return 1;
+		return 0;
+	}
+	if(dp[n][target] != -1) return dp[n][target];
+
+    int notpick = solve(n-1, target, arr, dp);
+    int pick = 0;
+    if(arr[n] <= target) pick = solve(n-1, target-arr[n], arr, dp);
+
+    return dp[n][target] = (pick + notpick) % mod;
+}
+
+int countPartitions(int n, int d, vector<int> &arr) {
+    int sum = accumulate(arr.begin(), arr.end(), 0);
+    if(sum - d < 0 || (sum - d) % 2 != 0) return 0;
+    
+    int target = (sum - d)/2;
+	vector<vector<int>> dp(n, vector<int>(target+1, -1));
+
+	return solve(n-1, target, arr, dp);   
+}
+
+
+
+
+
+//					TABULATION
+// TC: O(n * target)
+// SC: O(n * target)
+
+#include <bits/stdc++.h>
+int mod = (int)(1e9 + 7);
+
+int countPartitions(int n, int d, vector<int> &arr) {
+    int sum = accumulate(arr.begin(), arr.end(), 0);
+    if(sum - d < 0 || (sum - d) % 2 != 0) return 0;
+    
+    int target = (sum - d)/2;
+	vector<vector<int>> dp(n, vector<int>(target+1, 0));
+
+	if(arr[0] == 0) dp[0][0] = 2;
+    else dp[0][0] = 1;
+
+    if(arr[0] != 0 && arr[0] <= target) dp[0][arr[0]] = 1;
+
+    for(int i=1; i<n; i++) {
+        for(int tar =0; tar <= target; tar++) {
+            int notpick = dp[i-1][tar];
+            int pick = 0;
+            if(arr[i] <= tar) pick = dp[i-1][tar-arr[i]];
+
+            dp[i][tar] = (pick + notpick) % mod;
+        }
+    }
+
+    return dp[n-1][target] % mod;
+}
+
+
+
+
+
+//					SPACE OPTIMISATION
+// TC: O(n * target)
+// SC: O(target)
+
+#include <bits/stdc++.h>
+int mod = (int)(1e9 + 7);
+
+int countPartitions(int n, int d, vector<int> &arr) {
+    int sum = accumulate(arr.begin(), arr.end(), 0);
+    if(sum - d < 0 || (sum - d) % 2 != 0) return 0;
+    
+    int target = (sum - d)/2;
+	  vector<int> prev(target+1, 0);
+    vector<int> curr(target+1, 0);
+
+	if(arr[0] == 0) prev[0] = curr[0] = 2;
+    else prev[0] = curr[0] = 1;
+
+    if(arr[0] != 0 && arr[0] <= target) prev[arr[0]] = 1;
+
+    for(int i=1; i<n; i++) {
+        for(int tar =0; tar <= target; tar++) {
+            int notpick = prev[tar];
+            int pick = 0;
+            if(arr[i] <= tar) pick = prev[tar-arr[i]];
+
+            curr[tar] = (pick + notpick) % mod;
+        }
+
+        prev = curr;
+    }
+
+    return prev[target] % mod;
+}
