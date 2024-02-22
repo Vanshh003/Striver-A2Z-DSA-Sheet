@@ -1,0 +1,13 @@
+https://www.codingninjas.com/studio/problems/sum-of-first-n-numbers_8876068?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+long long solve(long long n) {
+    if(n == 1) return 1;
+    return n + solve(n-1);
+}
+
+long long sumFirstN(long long n) {
+    return solve(n);
+}
