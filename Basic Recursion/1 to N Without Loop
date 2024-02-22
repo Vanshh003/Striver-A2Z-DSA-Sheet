@@ -1,0 +1,19 @@
+https://www.codingninjas.com/studio/problems/print-1-to-n_628290?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+void solve(int x, vector<int> &ans) {
+    if(x == 0) return ;
+    
+    solve(x-1, ans);
+    ans.push_back(x);
+}
+
+vector<int> printNos(int x) {
+    if(x < 1) return {};
+    vector<int> ans;
+
+    solve(x, ans);
+    return ans;
+}
