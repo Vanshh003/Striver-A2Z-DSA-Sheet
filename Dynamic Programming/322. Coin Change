@@ -1,0 +1,133 @@
+https://leetcode.com/problems/coin-change/description/
+
+
+
+
+//                  RECURSION
+// TC: O(exponential)       (it wont be O(2^n) as for a particular iteration there are not exactly 2 choices, when coin is picked the index remains the same hence TC is much greater than O(2^n) and cannot be theoretically defined)
+// SC: O(target)            (it wont be O(n) as for a particular iteration there are more than 2 choices and in case of picking the coin we stay at the same index hence increasing the stack space therefore in the worst case it is equal to O(target))
+
+class Solution {
+public:
+    int solve(int i, int amount, vector<int> &coins) {
+        if(i == 0) return (amount % coins[0] == 0) ? amount/coins[0] : 1e9;
+
+        int notpick = 0 + solve(i-1, amount, coins);
+        int pick = 1e9;
+        if(coins[i] <= amount) pick = 1 + solve(i, amount-coins[i], coins);
+
+        return min(pick, notpick);
+    }
+
+    int coinChange(vector<int>& coins, int amount) {
+        int n = coins.size();
+        int ans = solve(n-1, amount, coins);
+
+        if(ans >= 1e9) return -1;
+        return ans;    
+    }
+};
+
+
+
+
+
+//                  MEMOIZATION
+// TC: O(n * target)       
+// SC: O(n * target) + O(target)
+
+class Solution {
+public:
+    int solve(int i, int amount, vector<int> &coins, vector<vector<int>> &dp) {
+        if(i == 0) return (amount % coins[0] == 0) ? amount/coins[0] : 1e9;
+        if(dp[i][amount] != -1) return dp[i][amount];
+
+        int notpick = 0 + solve(i-1, amount, coins, dp);
+        int pick = 1e9;
+        if(coins[i] <= amount) pick = 1 + solve(i, amount-coins[i], coins, dp);
+
+        return dp[i][amount] = min(pick, notpick);
+    }
+
+    int coinChange(vector<int>& coins, int amount) {
+        int n = coins.size();
+        vector<vector<int>> dp(n, vector<int>(amount+1, -1));
+        
+        int ans = solve(n-1, amount, coins, dp);
+        if(ans >= 1e9) return -1;
+        return ans;    
+    }
+};
+
+
+
+
+
+//                  TABULATION
+// TC: O(n * target)       
+// SC: O(n * target) 
+
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        int n = coins.size();
+        vector<vector<int>> dp(n, vector<int>(amount+1, 0));
+        
+        for(int tar=0; tar <= amount; tar++) {
+            if(tar % coins[0] == 0) dp[0][tar] = tar/coins[0];
+            else dp[0][tar] = 1e9;
+        }
+
+        for(int i=1; i<n; i++) {
+            for(int tar=0 ; tar <= amount; tar++) {
+                int notpick = dp[i-1][tar];
+                int pick = 1e9;
+                if(coins[i] <= tar) pick = 1 + dp[i][tar-coins[i]];
+
+                dp[i][tar] = min(pick, notpick);
+            }
+        }
+
+        int ans = dp[n-1][amount];
+        if(ans >= 1e9) return -1;
+        return ans;
+    }
+};
+
+
+
+
+
+//                  SPACE OPTIMISATION
+// TC: O(n * target)       
+// SC: O(target) 
+
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        int n = coins.size();
+        vector<int> prev(amount+1, 0);
+        vector<int> curr(amount+1, 0);
+        
+        for(int tar=0; tar <= amount; tar++) {
+            if(tar % coins[0] == 0) prev[tar] = tar/coins[0];
+            else prev[tar] = 1e9;
+        }
+
+        for(int i=1; i<n; i++) {
+            for(int tar=0 ; tar <= amount; tar++) {
+                int notpick = prev[tar];
+                int pick = 1e9;
+                if(coins[i] <= tar) pick = 1 + curr[tar-coins[i]];
+
+                curr[tar] = min(pick, notpick);
+            }
+
+            prev = curr;
+        }
+
+        int ans = prev[amount];
+        if(ans >= 1e9) return -1;
+        return ans;
+    }
+};
