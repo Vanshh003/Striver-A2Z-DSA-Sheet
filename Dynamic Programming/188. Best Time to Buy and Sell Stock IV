@@ -1,0 +1,373 @@
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/description/
+
+
+
+
+//                      RECURSION 1
+// TC: O(2^n)  ~  exponential
+// SC: O(n)
+
+class Solution {
+public:
+    int solve(int ind, int buy, int k, int n, vector<int> &prices) {
+        if(ind == n) return 0;
+        if(k == 0) return 0;
+
+        int profit = 0;
+
+        if(buy == 1) {
+            int take = -prices[ind] + solve(ind+1, 0, k, n, prices);
+            int nottake = 0 + solve(ind+1, 1, k, n, prices);
+
+            profit = max(take, nottake);
+        }
+
+        else {
+            int sell = prices[ind] + solve(ind+1, 1, k-1, n, prices);
+            int notsell = 0 + solve(ind+1, 0, k, n, prices);
+
+           profit = max(sell, notsell);
+        }
+
+        return profit;
+    }
+
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+        return solve(0, 1, k, n, prices);    
+    }
+};
+
+
+
+
+
+//                      MEMOIZATION 1
+// TC: O(n * 2 * k)  
+// SC: O(n * 2 * k) + O(n)
+
+class Solution {
+public:
+    int solve(int ind, int buy, int k, int n, vector<int> &prices, vector<vector<vector<int>>> &dp) {
+        if(ind == n) return 0;
+        if(k == 0) return 0;
+
+        if(dp[ind][buy][k] != -1) return dp[ind][buy][k];
+
+        int profit = 0;
+
+        if(buy == 1) {
+            int take = -prices[ind] + solve(ind+1, 0, k, n, prices, dp);
+            int nottake = 0 + solve(ind+1, 1, k, n, prices, dp);
+
+            profit = max(take, nottake);
+        }
+
+        else {
+            int sell = prices[ind] + solve(ind+1, 1, k-1, n, prices, dp);
+            int notsell = 0 + solve(ind+1, 0, k, n, prices, dp);
+
+           profit = max(sell, notsell);
+        }
+
+        return dp[ind][buy][k] = profit;
+    }
+
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+
+        vector<vector<vector<int>>> dp(n, vector<vector<int>>(2, vector<int>(k+1, -1)));
+
+        return solve(0, 1, k, n, prices, dp);    
+    }
+};
+
+
+
+
+
+//                      TABULATION 1
+// TC: O(n * 2 * k)  
+// SC: O(n * 2 * k) 
+
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+
+        vector<vector<vector<int>>> dp(n+1, vector<vector<int>>(2, vector<int>(k+1, 0)));
+
+        // base case
+        // no need to write as we're alredy initialising dp with 0
+
+        // for(int buy = 0; buy <= 1; buy++) {
+        //     for(int cap = 0; cap <= k; cap++) {
+        //         dp[n][buy][k] = 0;
+        //     }
+        // }
+
+        // for(int ind = 0; ind <= n; ind++) {
+        //     for(int buy = 0; buy <= 1; buy++) {
+        //         dp[ind][buy][0] = 0;
+        //     }
+        // }
+
+
+        for(int ind = n-1; ind >= 0; ind--) {
+            for(int buy = 0; buy <= 1; buy++) {
+                for(int cap = 1; cap <= k; cap++) {
+                    if(buy == 1) {
+                        int take = -prices[ind] + dp[ind+1][0][cap];
+                        int nottake = 0 + dp[ind+1][1][cap];
+
+                        dp[ind][buy][cap] = max(take, nottake);
+                    }
+
+                    else {
+                        int sell = prices[ind] + dp[ind+1][1][cap-1];
+                        int notsell = 0 + dp[ind+1][0][cap];
+
+                        dp[ind][buy][cap] = max(sell, notsell);
+                    }
+                }
+            }
+        } 
+
+        return dp[0][1][k];  
+    }
+};
+
+
+
+
+
+//                      SPACE OPTIMISATION 1
+// TC: O(n * 2 * k)  
+// SC: O(2 * k) * 2 
+
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+
+        vector<vector<int>> ahead(2, vector<int>(k+1, 0));
+        vector<vector<int>> curr(2, vector<int>(k+1, 0));
+
+        // base case
+        // no need to write as we're alredy initialising dp with 0
+
+        // for(int buy = 0; buy <= 1; buy++) {
+        //     for(int cap = 0; cap <= k; cap++) {
+        //         dp[n][buy][k] = 0;
+        //     }
+        // }
+
+        // for(int ind = 0; ind <= n; ind++) {
+        //     for(int buy = 0; buy <= 1; buy++) {
+        //         dp[ind][buy][0] = 0;
+        //     }
+        // }
+
+
+        for(int ind = n-1; ind >= 0; ind--) {
+            for(int buy = 0; buy <= 1; buy++) {
+                for(int cap = 1; cap <= k; cap++) {
+                    if(buy == 1) {
+                        int take = -prices[ind] + ahead[0][cap];
+                        int nottake = 0 + ahead[1][cap];
+
+                        curr[buy][cap] = max(take, nottake);
+                    }
+
+                    else {
+                        int sell = prices[ind] + ahead[1][cap-1];
+                        int notsell = 0 + ahead[0][cap];
+
+                        curr[buy][cap] = max(sell, notsell);
+                    }
+                }
+
+                ahead = curr;
+            }
+        } 
+
+        return ahead[1][k];  
+    }
+};
+
+
+
+
+
+
+
+
+
+//                      RECURSION 2
+// TC: O(2^n)  ~  exponential
+// SC: O(n)
+
+class Solution {
+public:
+    int solve(int ind, int trans, int k, int n, vector<int> &prices) {
+        if(ind == n || trans == 2*k) return 0;
+
+        int profit = 0;
+
+        if(trans % 2 == 0) {
+            int take = -prices[ind] + solve(ind+1, trans+1, k, n, prices);
+            int nottake = 0 + solve(ind+1, trans, k, n, prices);
+
+            profit = max(take, nottake);
+        }
+
+        else {
+            int sell = prices[ind] + solve(ind+1, trans+1, k, n, prices);
+            int notsell = 0 + solve(ind+1, trans, k, n, prices);
+
+            profit = max(sell, notsell);
+        }
+
+        return profit;
+    }
+
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+
+        return solve(0, 0, k, n, prices);
+    }
+};
+
+
+
+
+
+//                      MEMOIZATION 2
+// TC: O(n * 2k)
+// SC: O(n * 2k) + O(n)
+
+class Solution {
+public:
+    int solve(int ind, int trans, int k, int n, vector<int> &prices, vector<vector<int>> &dp) {
+        if(ind == n || trans == 2*k) return 0;
+
+        if(dp[ind][trans] != -1) return dp[ind][trans];
+
+        int profit = 0;
+
+        if(trans % 2 == 0) {
+            int take = -prices[ind] + solve(ind+1, trans+1, k, n, prices, dp);
+            int nottake = 0 + solve(ind+1, trans, k, n, prices, dp);
+
+            profit = max(take, nottake);
+        }
+
+        else {
+            int sell = prices[ind] + solve(ind+1, trans+1, k, n, prices, dp);
+            int notsell = 0 + solve(ind+1, trans, k, n, prices, dp);
+
+            profit = max(sell, notsell);
+        }
+
+        return dp[ind][trans] = profit;
+    }
+
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+
+        vector<vector<int>> dp(n, vector<int>(2*k, -1));
+
+        return solve(0, 0, k, n, prices, dp);
+    }
+};
+
+
+
+
+
+//                      TABULATION 2
+// TC: O(n * 2k)
+// SC: O(n * 2k) 
+
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+
+        vector<vector<int>> dp(n+1, vector<int>(2*k+1, 0));
+
+        // base case
+        // no need to write base case as we are intiliasing dp with 0
+        
+        // for(int trans = 0; trans <= 2*k; trans++) dp[n][trans] = 0;
+        // for(int ind = 0; ind <= n; ind++) dp[ind][2*k] = 0;
+
+
+        for(int ind = n-1; ind >= 0; ind--) {
+            for(int trans = 2*k-1; trans >= 0; trans--) {
+                if(trans % 2 == 0) {
+                    int take = -prices[ind] + dp[ind+1][trans+1];
+                    int nottake = 0 + dp[ind+1][trans];
+
+                    dp[ind][trans] = max(take, nottake);
+                }
+
+                else {
+                    int sell = prices[ind] + dp[ind+1][trans+1];
+                    int notsell = 0 + dp[ind+1][trans];
+
+                    dp[ind][trans] = max(sell, notsell);
+                }
+            }
+        }
+
+        return dp[0][0];
+    }
+};
+
+
+
+
+
+//                      SPACE OPTIMISATION 2
+// TC: O(n * 2k)
+// SC: O(2k) * 2  ~  O(k) 
+
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+
+        vector<int> ahead(2*k+1, 0);
+        vector<int> curr(2*k+1, 0);
+
+        // base case
+        // no need to write base case as we are intiliasing dp with 0
+        
+        // for(int trans = 0; trans <= 2*k; trans++) dp[n][trans] = 0;
+        // for(int ind = 0; ind <= n; ind++) dp[ind][2*k] = 0;
+
+
+        for(int ind = n-1; ind >= 0; ind--) {
+            for(int trans = 2*k-1; trans >= 0; trans--) {
+                if(trans % 2 == 0) {
+                    int take = -prices[ind] + ahead[trans+1];
+                    int nottake = 0 + ahead[trans];
+
+                    curr[trans] = max(take, nottake);
+                }
+
+                else {
+                    int sell = prices[ind] + ahead[trans+1];
+                    int notsell = 0 + ahead[trans];
+
+                    curr[trans] = max(sell, notsell);
+                }
+            }
+
+            ahead = curr;
+        }
+
+        return ahead[0];
+    }
+};
