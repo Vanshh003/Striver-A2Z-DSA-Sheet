@@ -1,0 +1,47 @@
+https://www.codingninjas.com/studio/problems/printing-longest-increasing-subsequence_8360670?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+vector<int> printingLongestIncreasingSubsequence(vector<int> arr, int n) {
+	vector<int> dp(n, 1);
+	vector<int> temp(n);
+
+	for(int i=0; i<n; i++) temp[i] = i;
+	
+	for(int ind=0; ind<n; ind++) {
+		for(int prev = 0; prev < ind; prev++) {
+			if(arr[prev] < arr[ind] && 1 + dp[prev] > dp[ind]) {
+				dp[ind] = 1 + dp[prev];
+				temp[ind] = prev;
+			}
+		}
+	}
+
+	int maxi = 1; 
+	int lastInd = 0;
+	for(int i=0; i<n; i++) {
+		if(dp[i] > maxi) {
+			maxi = dp[i];
+			lastInd = i;
+		}
+	}
+
+	vector<int> ans;
+	
+	// ans.push_back(arr[lastInd]);
+	// while(temp[lastInd] != lastInd) {
+	// 	lastInd = temp[lastInd];
+	// 	ans.push_back(arr[lastInd]);
+	// }
+
+	for(int i=n-1; i>=0; i--) {
+		if(i==lastInd) {
+			ans.push_back(arr[lastInd]);
+			lastInd = temp[lastInd];
+		}
+	}
+
+	reverse(ans.begin(), ans.end());
+	return ans;
+}
