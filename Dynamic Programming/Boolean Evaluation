@@ -1,0 +1,166 @@
+https://www.codingninjas.com/studio/problems/boolean-evaluation_1214650?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+//                      RECURSION
+// TC: exponential
+// SC: O(n)
+
+#include <bits/stdc++.h>
+
+#define mod 1000000007
+#define ll long long 
+
+long long solve(int i, int j, int isTrue, string &s) {
+    if(i > j) return 0;
+    if(i == j) {
+        if(isTrue) return s[i] == 'T';
+        else return s[i] == 'F';
+    }
+
+    ll ways = 0;
+    for(int ind = i+1; ind <= j-1; ind+=2) {
+        ll leftTrue = solve(i, ind-1, 1, s);
+        ll leftFalse = solve(i, ind-1, 0, s);
+        ll rightTrue = solve(ind+1, j, 1, s);
+        ll rightFalse = solve(ind+1, j, 0, s);
+
+        if(s[ind] == '&') {
+            if(isTrue) ways = (ways + (leftTrue * rightTrue) % mod) % mod;
+            else ways = (ways + (leftTrue * rightFalse)%mod + (leftFalse * rightTrue)%mod + (leftFalse * rightFalse)%mod ) % mod;
+        }
+
+        else if(s[ind] == '|') {
+            if(isTrue) ways = (ways + (leftTrue * rightFalse)%mod + (leftFalse * rightTrue)%mod + (leftTrue * rightTrue)%mod) % mod;
+            else ways = (ways + (leftFalse * rightFalse) % mod) % mod;
+        }
+
+        else if(s[ind] == '^') {
+            if(isTrue) ways = (ways + (leftTrue * rightFalse)%mod + (leftFalse * rightTrue)%mod) % mod;
+            else ways = (ways + (leftTrue * rightTrue)%mod + (leftFalse * rightFalse)%mod) % mod;
+        }
+    }
+
+    return ways;
+}
+
+int evaluateExp(string &s) {
+    int n = s.size();
+    return solve(0, n-1, 1, s);   
+}
+
+
+
+
+
+//                      MEMOIZATION
+// TC: O(n * n)
+// SC: O(n) + O(n)
+
+#include <bits/stdc++.h>
+
+#define mod 1000000007
+#define ll long long 
+
+long long solve(int i, int j, int isTrue, string &s, vector<vector<vector<ll>>> &dp) {
+    if(i > j) return 0;
+    if(i == j) {
+        if(isTrue) return s[i] == 'T';
+        else return s[i] == 'F';
+    }
+    if(dp[i][j][isTrue] != -1) return dp[i][j][isTrue];
+
+    ll ways = 0;
+    for(int ind = i+1; ind <= j-1; ind+=2) {
+        ll leftTrue = solve(i, ind-1, 1, s, dp);
+        ll leftFalse = solve(i, ind-1, 0, s, dp);
+        ll rightTrue = solve(ind+1, j, 1, s, dp);
+        ll rightFalse = solve(ind+1, j, 0, s, dp);
+
+        if(s[ind] == '&') {
+            if(isTrue) ways = (ways + (leftTrue * rightTrue) % mod) % mod;
+            else ways = (ways + (leftTrue * rightFalse)%mod + (leftFalse * rightTrue)%mod + (leftFalse * rightFalse)%mod ) % mod;
+        }
+
+        else if(s[ind] == '|') {
+            if(isTrue) ways = (ways + (leftTrue * rightFalse)%mod + (leftFalse * rightTrue)%mod + (leftTrue * rightTrue)%mod) % mod;
+            else ways = (ways + (leftFalse * rightFalse) % mod) % mod;
+        }
+
+        else if(s[ind] == '^') {
+            if(isTrue) ways = (ways + (leftTrue * rightFalse)%mod + (leftFalse * rightTrue)%mod) % mod;
+            else ways = (ways + (leftTrue * rightTrue)%mod + (leftFalse * rightFalse)%mod) % mod;
+        }
+    }
+
+    return dp[i][j][isTrue] = ways;
+}
+
+int evaluateExp(string &s) {
+    int n = s.size();
+
+    vector<vector<vector<ll>>> dp(n, vector<vector<ll>>(n, vector<ll>(2, -1)));
+
+    return solve(0, n-1, 1, s, dp);   
+}
+
+
+
+
+
+//                      TABULATION
+// TC: O(n * n)
+// SC: O(n)
+
+#include <bits/stdc++.h>
+
+#define mod 1000000007
+#define ll long long 
+
+int evaluateExp(string &s) {
+    int n = s.size();
+    vector<vector<vector<ll>>> dp(n, vector<vector<ll>>(n, vector<ll>(2, 0)));
+
+    for(int i=n-1; i>=0; i--) {
+        for(int j=0; j<n; j++) {
+            if(i>j) continue;
+
+            for(int isTrue=0; isTrue<=1; isTrue++) {
+                if(i == j) {
+                    if(isTrue == 1) dp[i][j][isTrue] = (s[i] == 'T');
+                    else dp[i][j][isTrue] = (s[i] == 'F');
+                    
+                    continue;
+                }
+
+                ll ways = 0;
+                for(int k=i; k<j; k++) {
+                    ll leftTrue = dp[i][k-1][1];
+                    ll leftFalse = dp[i][k-1][0];
+                    ll rightTrue = dp[k+1][j][1];
+                    ll rightFalse = dp[k+1][j][0];
+
+                    if(s[k] == '&') {
+                        if(isTrue) ways = (ways + (leftTrue * rightTrue) % mod) % mod;
+                        else ways = (ways + (leftFalse * rightTrue) % mod + (leftFalse * rightFalse) % mod + (leftTrue * rightFalse) % mod) % mod;
+                    }
+
+                    else if(s[k] == '|') {
+                        if(isTrue) ways = (ways + (leftTrue * rightTrue) % mod + (leftTrue * rightFalse) % mod + (leftFalse * rightTrue) % mod) % mod;
+                        else ways = (ways + (leftFalse * rightFalse) % mod) % mod;
+                    }
+
+                    else {
+                        if(isTrue) ways = (ways + (leftTrue * rightFalse) % mod + (leftFalse * rightTrue) % mod) % mod;
+                        else ways = (ways + (leftTrue * rightTrue) % mod + (leftFalse * rightFalse) % mod) % mod;
+                    }
+                }
+
+                dp[i][j][isTrue] = ways;
+            }
+        }
+    }
+
+    return dp[0][n-1][1];
+}
