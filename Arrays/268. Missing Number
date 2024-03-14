@@ -1,0 +1,102 @@
+https://leetcode.com/problems/missing-number/description/
+
+
+
+
+//                      BRUTE FORCE
+// TC: O(n^2)
+// SC: O(1)
+
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int n = nums.size();
+
+        for(int i = 1; i <= n; i++) {
+            int flag = 0;
+
+            for(int j = 0; j < n; j++) {
+                if(nums[j] == i) {
+                    flag = 1;
+                    break;
+                }
+            }
+
+            if(flag == 0) return i;
+        }
+
+        return 0;
+    }
+};
+
+
+
+
+//                      BETTER
+// TC: O(n) + O(n)
+// SC: O(n)
+
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int n = nums.size();
+        // unordered_map<int, int> map;
+
+        // for(int i: nums) map[i]++;
+
+        // for(int i = 1; i <= n; i++) {
+        //     if(map.find(i) == map.end()) return i;
+        // }
+
+        // return 0;
+
+
+        vector<int> freq(n+1, 0);
+
+        for(int i: nums) freq[i]++;
+        for(int i = 1; i <= n; i++) {
+            if(freq[i] == 0) return i;
+        }
+
+        return 0;
+    }
+};
+
+
+
+
+//                      OPTIMAL 1
+// TC: O(n)
+// SC: O(1)
+
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int n = nums.size();
+        int reqsum = n*(n+1)/2;
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+        return reqsum - sum;
+    }
+};
+
+
+
+
+//                      OPTIMAL 2
+// TC: O(n)
+// SC: O(1)
+
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int n = nums.size();
+        int xor1 = 0;
+        // int xor2 = 0;
+        for(int i=0; i<nums.size(); i++) {
+            xor1 ^= nums[i] ^ i+1;
+            // xor2 ^= i+1;
+        }
+        
+        return xor1;
+    }
+};
