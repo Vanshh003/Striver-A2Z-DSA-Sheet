@@ -1,0 +1,74 @@
+https://leetcode.com/problems/single-number/
+
+
+
+
+//                   BRUTE FORCE
+// TC: O(n^2)
+// SC: O(1)
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int n = nums.size();
+        int ans = 0;
+       
+        for(int i=0; i<n; i++) {
+            int cnt = 0;
+
+            for(int j=0; j<n; j++) {
+                if(nums[j] == nums[i]) cnt++;
+            }
+
+            if(cnt == 1) return nums[i];
+        }
+
+        return -1;
+    }
+};
+
+
+
+
+
+//                   BETTER 
+// TC: O(n) + O(n)
+// SC: O(n)
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int n = nums.size();
+        unordered_map<int, int> map;
+        for(int i: nums) map[i]++;
+
+        for(int i: nums) {
+            if(map[i] == 1) return i;
+        }
+
+        return -1;
+    }
+};
+
+
+
+
+
+//                   OPTIMAL
+// TC: O(NlogN) + O(N)
+// SC: O(n)
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int n = nums.size();
+        map<int, int> map;
+        for(int i: nums) map[i]++;
+
+        for(int i: nums) {
+            if(map[i] == 1) return i;
+        }
+
+        return -1;
+    }
+};
