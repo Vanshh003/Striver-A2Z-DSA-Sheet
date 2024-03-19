@@ -1,0 +1,27 @@
+https://www.codingninjas.com/studio/problems/longest-subarray-with-sum-k_5713505?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+// TC: O(NlogN)
+// SC: O(N)
+
+#include <bits/stdc++.h> 
+int getLongestSubarray(vector<int>& nums, int k){
+    int n = nums.size();
+    map<int, int> map;
+
+    int sum = 0;
+    int len = 0;
+    
+    for(int i = 0; i < n; i++) {
+        sum += nums[i];
+
+        if(sum == k) len = max(len, i+1);
+
+        if(map.find(sum) == map.end()) map[sum] = i;
+        if(map.find(sum-k) != map.end()) len = max(len, i - map[sum-k]);
+    }
+
+    return len;
+}
