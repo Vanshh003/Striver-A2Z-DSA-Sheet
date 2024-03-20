@@ -1,0 +1,12 @@
+https://www.codingninjas.com/studio/problems/counting-graphs_8357237?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+
+
+
+// TC: O(1)
+// SC: O(1)
+
+int countingGraphs(int n) {
+    int power = n*(n-1)/2;
+    return pow(2, power);
+}
