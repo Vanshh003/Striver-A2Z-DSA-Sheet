@@ -1,0 +1,77 @@
+https://leetcode.com/problems/majority-element/
+
+
+
+
+//                      BRUTE
+// TC: O(n^2)
+// SC: O(1)
+
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int n = nums.size();
+
+        for(int i=0; i<n; i++) {
+            int count = 0;
+
+            for(int j=0; j<n; j++) {
+                if(nums[j] == nums[i]) count++;
+            }
+
+            if(count > n/2) return nums[i];
+        }
+
+        return -1;
+    }
+};
+
+
+
+
+
+//                      BETTER
+// TC: O(NlogN) + O(N)
+// SC: O(N)
+
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int n = nums.size();
+        map<int, int> map;
+
+        for(int i : nums) map[i]++;
+        
+        for(auto i : map) {
+            if(i.second > n/2) return i.first;
+        }
+
+        return -1;
+    }
+};
+
+
+
+
+
+//                      OPTIMAL (MOORE'S VOTING ALGO)
+// TC: O(N)
+// SC: O(1)
+
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int count = 0;
+        int ele;
+        int n = nums.size();
+
+        for(int i=0; i<n; i++) {
+            if(count == 0) ele = nums[i];
+            
+            if(nums[i] == ele) count++;
+            else count--;
+        }
+
+        return ele;
+    }
+};
