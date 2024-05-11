@@ -1,0 +1,77 @@
+https://leetcode.com/problems/flood-fill/
+
+
+
+
+class Solution {
+public:
+    void dfs(int row, int col, vector<vector<int>> &ans, vector<vector<int>> &image, int newcolor, int delrow[], int delcol[], int initialcolor) {
+        ans[row][col] = newcolor;
+
+        int n = image.size();
+        int m = image[0].size();
+
+        for(int i=0; i<4; i++) {
+            int nbrrow = row + delrow[i];
+            int nbrcol = col + delcol[i];
+
+            if(nbrrow >= 0 && nbrrow < n && nbrcol >= 0 && nbrcol < m && image[nbrrow][nbrcol] == initialcolor && ans[nbrrow][nbrcol] != newcolor) {
+                dfs(nbrrow, nbrcol, ans, image, newcolor, delrow, delcol, initialcolor);
+            }
+        }
+    }
+
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        int initialcolor = image[sr][sc];
+        vector<vector<int>> ans = image;
+
+        int delrow[] = {-1, 0, 1, 0};
+        int delcol[] = {0, 1, 0, -1};
+
+        dfs(sr, sc, ans, image, color, delrow, delcol, initialcolor);
+
+        return ans;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // void dfs(int sr, int sc, vector<vector<int>> &ans, vector<vector<int>> &image, int delrow[], int delcol[], int newcolor, int initialcolor) {
+    //     ans[sr][sc] = newcolor;
+
+    //     int n = 
+
+    //     for(int i=0; i<4; i++) {
+    //         int nbrrow = sr + delrow[i];
+    //         int nbrcol = sc + delcol[i];
+
+    //         if(nbrrow >= 0 && nbrrow < n)
+    //     }
+    // }
+
+    // vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+    //     int initialcolor = image[sr][sc];
+    //     vector<vector<int>> ans = image;
+
+    //     int delrow = {-1, 0, 1, 0};
+    //     int delcol = {0, 1, 0, -1};
+
+    //     dfs(sr, sc, ans, image, delrow, delcol, color, intitialcolor);
+
+    //     return ans;
+    // }
+};
