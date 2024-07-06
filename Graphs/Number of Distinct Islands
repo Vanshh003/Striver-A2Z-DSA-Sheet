@@ -3,6 +3,9 @@ https://www.geeksforgeeks.org/problems/number-of-distinct-islands/0
 
 
 
+// TC: O(n*m * 4) + O(n*m * log(n*m))        (O(dfs) + O(log(set.size()))) (dfs + insertion in set)
+// SC: O(n*m) + O(n*m)                       (O(visited) + O(set))
+
 class Solution {
   public:
     void dfs(int row, int col, vector<vector<int>> &visited, vector<vector<int>> &grid, vector<pair<int, int>> &v, int r0, int c0) {
