@@ -1,0 +1,31 @@
+https://leetcode.com/problems/subsets/description/
+
+
+
+
+class Solution {
+public:
+    void solve(int i, vector<vector<int>> &ans, vector<int> &ds, vector<int> &arr, int n) {
+        if(i >= n) {
+            ans.push_back(ds);
+            return;
+        }
+
+        // take
+        ds.push_back(arr[i]);
+        solve(i+1, ans, ds, arr, n);
+        
+        ds.pop_back();
+
+        // not take
+        solve(i+1, ans, ds, arr, n);
+    }
+
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> ans;
+        vector<int> ds;
+        solve(0, ans, ds, nums, n);
+        return ans;
+    }
+};
