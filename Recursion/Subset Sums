@@ -1,0 +1,28 @@
+https://www.geeksforgeeks.org/problems/subset-sums2234/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=subset-sums
+
+
+
+
+class Solution {
+  public:
+    void solve(int i, int sum, vector<int> &arr, int n, vector<int> &ans) {
+        if(i >= n) {
+            ans.push_back(sum);
+            return;
+        }
+        
+        // pick
+        solve(i+1, sum+arr[i], arr, n, ans);
+        
+        // no pick
+        solve(i+1, sum, arr, n, ans);
+    }
+    
+    vector<int> subsetSums(vector<int> arr, int n) {
+        vector<int> ans;
+        
+        solve(0, 0, arr, n, ans);
+
+        return ans;
+    }
+};
