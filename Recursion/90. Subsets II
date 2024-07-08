@@ -1,0 +1,30 @@
+https://leetcode.com/problems/subsets-ii/description/
+
+
+
+
+class Solution {
+public:
+    void solve(int i, vector<vector<int>> &ans, vector<int> &v, vector<int> &arr, int n) {
+        ans.push_back(v);
+        
+        for(int ind = i; ind < n; ind++) {
+            if(ind != i && arr[ind] == arr[ind-1]) continue;
+
+            v.push_back(arr[ind]);
+            solve(ind+1, ans, v, arr, n);
+            v.pop_back();
+        }
+    }
+
+    vector<vector<int>> subsetsWithDup(vector<int> &arr) {
+        sort(arr.begin(), arr.end());
+        int n = arr.size();
+        vector<vector<int>> ans;
+        vector<int> v;
+
+        solve(0, ans, v, arr, n);
+
+        return ans;
+    }
+};
