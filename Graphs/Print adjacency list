@@ -1,0 +1,20 @@
+https://www.geeksforgeeks.org/problems/print-adjacency-list-1587115620/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=print-adjacency-list
+
+
+
+
+class Solution {
+  public:
+    vector<vector<int>> printGraph(int v, vector<pair<int, int>> &edges) {
+        int n = edges.size();
+        
+        vector<vector<int>> adj(v);
+        
+        for(int i=0; i<n; i++) {
+            adj[edges[i].first].push_back(edges[i].second);
+            adj[edges[i].second].push_back(edges[i].first);
+        }
+        
+        return adj;
+    }
+};
