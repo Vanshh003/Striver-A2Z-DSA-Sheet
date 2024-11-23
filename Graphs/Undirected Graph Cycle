@@ -1,0 +1,46 @@
+https://www.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=detect-cycle-in-an-undirected-graph
+
+
+
+
+class Solution {
+  public:
+    bool bfs(int ind, vector<vector<int>> &adj, vector<int> &visited) {
+        queue<pair<int, int>> q;    // {node, parent}
+        q.push({ind, -1});
+        
+        visited[ind] = 1;
+        
+        while(!q.empty()) {
+            auto front = q.front();
+            int node = front.first;
+            int parent = front.second;
+            
+            q.pop();
+            
+            for(auto &i: adj[node]) {
+                if(i != parent && visited[i] == 1) return true;
+                if(!visited[i]) {
+                    visited[i] = 1;
+                    q.push({i, node});
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    bool isCycle(vector<vector<int>> &adj) {
+        int n = adj.size();    
+        
+        vector<int> visited(n, 0);
+        
+        for(int i=0; i<n; i++) {
+            if(!visited[i]) {
+                if(bfs(i, adj, visited)) return true;
+            }
+        }
+        
+        return false;
+    }
+};
