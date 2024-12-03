@@ -1,0 +1,75 @@
+https://www.geeksforgeeks.org/problems/number-of-distinct-islands/0
+
+
+
+
+class Solution {
+  public:
+    
+    void bfs(int row, int col, int n, int m, vector<vector<int>> &visited, vector<vector<int>> &grid, vector<vector<int>> &arr) {
+        arr.push_back({row, col});
+        
+        queue<pair<int, int>> q;    // {i, j}
+        q.push({row, col});
+        visited[row][col] = 1;
+        
+        vector<int> dirRow = {0, -1, 0, 1};
+        vector<int> dirCol = {1, 0, -1, 0};
+        
+        while(!q.empty()) {
+            auto node = q.front();
+            int r = node.first;
+            int c = node.second;
+            
+            arr.push_back({r, c});
+            
+            q.pop();
+            
+            for(int i=0; i<4; i++) {
+                int newRow = r + dirRow[i];
+                int newCol = c + dirCol[i];
+                
+                if(newRow >= 0 && newRow < n && newCol >= 0 && newCol < m && !visited[newRow][newCol] && grid[newRow][newCol] == 1) {
+                    visited[newRow][newCol] = 1;
+                    q.push({newRow, newCol});
+                    
+                }
+            }
+            
+        }
+    }
+    
+    void transform(vector<vector<int>> &arr) {
+        int x = arr[0][0];
+        int y = arr[0][1];
+        
+        for(int i=0; i<arr.size(); i++) {
+            arr[i][0] -= x;
+            arr[i][1] -= y;
+        }
+    }
+  
+    int countDistinctIslands(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        
+        vector<vector<int>> visited(n, vector<int>(m, 0));
+        vector<vector<int>> arr;
+        set<vector<vector<int>>> st;
+        
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<m; j++) {
+                if(grid[i][j] == 1 && !visited[i][j]) {
+                    bfs(i, j, n, m, visited, grid, arr);
+                    
+                    transform(arr);
+                    st.insert(arr);
+                    
+                    arr.resize(0, vector<int>(0));
+                }
+            }
+        }
+        
+        return st.size();
+    }
+};
