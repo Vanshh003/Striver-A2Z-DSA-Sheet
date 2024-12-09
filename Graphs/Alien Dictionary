@@ -1,0 +1,56 @@
+https://www.geeksforgeeks.org/problems/alien-dictionary/1
+
+
+
+
+class Solution {
+  public:
+    string findOrder(vector<string> dict, int k) {
+        int n = dict.size();
+        
+        vector<int> adj[k];
+        vector<int> indegree(k, 0);
+        
+        for(int i=0; i<n-1; i++) {
+            string curr = dict[i];
+            string next = dict[i + 1];
+            
+            int len = min(curr.size(), next.size());
+            bool found = false;
+
+            for(int j=0; j<len; j++) {
+                if(curr[j] != next[j]) {
+                    adj[curr[j] - 'a'].push_back(next[j] - 'a');
+                    indegree[next[j] - 'a']++;
+                    
+                    found = true;
+                    break;
+                }
+            }
+            
+            if(!found && curr.size() > next.size()) return "";
+        }
+        
+        queue<int> q;
+        for(int i=0;  i<k; i++) {
+            if(indegree[i] == 0) q.push(i);
+        }
+        
+        string topo;
+        while(!q.empty()) {
+            int node = q.front();
+            q.pop();
+            
+            topo += (char)(node + 'a');
+            
+            for(int &i: adj[node]) {
+                indegree[i]--;
+                if(indegree[i] == 0) q.push(i);
+            }
+        }
+        
+        if(topo.size() < k) return "";
+        
+        return topo;
+    }
+};
