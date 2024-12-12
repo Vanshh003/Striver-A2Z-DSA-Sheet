@@ -1,0 +1,58 @@
+https://www.geeksforgeeks.org/problems/shortest-path-in-undirected-graph/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=shortest-path-in-undirected-graph
+
+
+
+
+class Solution {
+  public:
+    vector<int> shortestPath(int v, int e, vector<vector<int>>& edges) {
+        vector<int> indegree(v, 0);
+        
+        vector<pair<int, int>> adj[v];
+        for(int i=0; i<e; i++) {
+            adj[edges[i][0]].push_back({edges[i][1], edges[i][2]});
+            indegree[edges[i][1]]++;
+        }
+        
+        queue<int> topo_q;
+        vector<int> topo;
+        
+        for(int i=0; i<v; i++) {
+            if(indegree[i] == 0) topo_q.push(i);
+        }
+        
+        while(!topo_q.empty()) {
+            int node = topo_q.front();
+            topo_q.pop();
+            
+            topo.push_back(node);
+            
+            for(auto &it: adj[node]) {
+                int vertex = it.first;
+                
+                indegree[vertex]--;
+                if(indegree[vertex] == 0) topo_q.push(vertex);
+            }
+        }
+        
+        vector<int> ans(v, 1e9);
+        ans[0] = 0;
+        
+        for(int i=0; i<v; i++) {
+            int node = topo[i];
+            
+            for(auto &it: adj[node]) {
+                int vertex = it.first;
+                int weight = it.second;
+                
+                ans[vertex] = min(ans[vertex], ans[node] + weight);
+            }
+        }
+        
+        for(int i=0; i<v; i++) {
+            if(ans[i] == 1e9) ans[i] = -1;
+        }
+        
+        return ans;
+    }
+};
