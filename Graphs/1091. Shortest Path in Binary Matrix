@@ -1,0 +1,43 @@
+https://leetcode.com/problems/shortest-path-in-binary-matrix/description/
+
+
+
+
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        int n = grid.size();
+
+        if(grid[0][0] == 1 || grid[n-1][n-1] == 1) return -1;
+
+        queue<pair<pair<int, int>, int>> q;     // {{i, j}, dist}
+        q.push({{0, 0}, 1});
+
+        vector<vector<int>> dist(n, vector<int>(n, 1e9));
+        dist[0][0] = 1;
+
+        while(!q.empty()) {
+            auto front = q.front();
+            int row = front.first.first;
+            int col = front.first.second;
+            int distance = front.second;
+
+            q.pop();
+            if(row == n-1 && col == n-1) return distance;
+
+            for(int i=-1; i<=1; i++) {
+                for(int j=-1; j<=1; j++) {
+                    int newRow = row + i;
+                    int newCol = col + j;
+
+                    if(newRow < n && newRow >= 0 && newCol < n && newCol >= 0 && grid[newRow][newCol] == 0 && distance+1 < dist[newRow][newCol]) {        
+                        q.push({{newRow, newCol}, distance+1});
+                        dist[newRow][newCol] = distance+1;
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+};
