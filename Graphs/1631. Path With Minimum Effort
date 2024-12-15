@@ -1,0 +1,47 @@
+https://leetcode.com/problems/path-with-minimum-effort/description/
+
+
+
+
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        int n = heights.size();
+        int m = heights[0].size();
+    
+        priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
+        pq.push({0, {0, 0}});
+
+        vector<int> dirRow = {-1, 0, 0, 1};
+        vector<int> dirCol = {0, 1, -1, 0};
+
+        vector<vector<int>> diff(n, vector<int>(m, 1e9));
+        diff[0][0] = 0;
+
+        while(!pq.empty()) {
+            auto front = pq.top();
+            int difference = front.first;
+            int row = front.second.first;
+            int col = front.second.second;
+
+            pq.pop();
+            if(row == n-1 && col == m-1) return difference;
+
+            for(int i=0; i<4; i++) {
+                int newRow = row + dirRow[i];
+                int newCol = col + dirCol[i];
+
+                if(newRow < n && newRow >= 0 && newCol < m && newCol >= 0) {
+                    int effort = max(abs(heights[newRow][newCol] - heights[row][col]), difference);
+                    
+                    if(effort < diff[newRow][newCol]) {
+                        diff[newRow][newCol] = effort;
+                        pq.push({effort, {newRow, newCol}});
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+};
