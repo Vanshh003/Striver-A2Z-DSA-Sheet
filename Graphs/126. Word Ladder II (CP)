@@ -1,0 +1,84 @@
+https://leetcode.com/problems/word-ladder-ii/description/
+
+
+
+
+class Solution {
+public:
+    void dfs(string src, string word, vector<string> &seq, vector<vector<string>> &ans, unordered_map<string, int> &mp) {
+        if(word == src) {
+            reverse(seq.begin(), seq.end());
+            ans.push_back(seq);
+            reverse(seq.begin(), seq.end());
+
+            return;
+        }
+
+        int steps = mp[word];
+
+        for(int i=0; i<src.size(); i++) {
+            char og = word[i];
+
+            for(char ch = 'a'; ch <= 'z'; ch++) {
+                word[i] = ch;
+                
+                if(mp.find(word) != mp.end() && mp[word]+1 == steps) {
+                    seq.push_back(word);
+                    dfs(src, word, seq, ans, mp);
+                    seq.pop_back();
+                }
+            }
+
+            word[i] = og;
+        }
+    }
+
+    vector<vector<string>> findLadders(string src, string dest, vector<string>& wordList) {
+       	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+        int n = wordList.size();
+        vector<vector<string>> ans;
+        
+        unordered_set<string> st(wordList.begin(), wordList.end());
+        unordered_map<string, int> mp;
+        mp[src] = 1;
+
+        queue<string> q;
+        q.push(src);
+
+        int sz = src.size();
+        st.erase(src);
+
+        while(!q.empty()) {
+            string curr = q.front();
+            int steps = mp[curr];
+        
+            q.pop();
+            if(curr == dest) break;
+
+            for(int i=0; i<sz; i++) {
+                char og = curr[i];
+
+                for(char ch = 'a'; ch <= 'z'; ch++) {
+                    curr[i] = ch;
+                    if(st.find(curr) != st.end()) {
+                        q.push(curr);
+                        st.erase(curr);
+                        mp[curr] = steps+1;
+                    }
+                }
+
+                curr[i] = og;
+            }
+        }
+
+        if(mp.find(dest) != mp.end()) {
+            vector<string> seq;
+            seq.push_back(dest);
+
+            dfs(src, dest, seq, ans, mp);
+        }
+
+        return ans;
+    }
+};
