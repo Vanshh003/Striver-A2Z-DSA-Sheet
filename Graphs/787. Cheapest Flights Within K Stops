@@ -33,7 +33,7 @@ public:
                 int dist = it.second;
 
                 int d = dist + curr_dist;
-                if(d < dis[goto_node]) {
+                if(d < dis[goto_node] && stops <= k) {
                     dis[goto_node] = d;
                     q.push({stops+1, {d, goto_node}});
                 }
