@@ -1,0 +1,41 @@
+https://www.geeksforgeeks.org/problems/minimum-multiplications-to-reach-end/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=minimum-multiplications-to-reach-end
+
+
+
+
+class Solution {
+  public:
+    int minimumMultiplications(vector<int>& arr, int start, int end) {
+        if(start == end) return 0;
+    
+        int n = arr.size();
+        int mod = 1e5;
+        
+        queue<pair<int, int>> q;
+        q.push({start, 0});
+        
+        vector<int> dist(1e5, 1e9);
+        dist[start] = 0;
+        
+        while(!q.empty()) {
+            int node = q.front().first;
+            int steps = q.front().second;
+            
+            q.pop();
+            
+            for(auto &it: arr) {
+                int prod = (it * node) % mod;
+            
+                if(steps+1 < dist[prod]) {
+                    dist[prod] = steps+1;
+                    if(prod == end) return steps+1;
+                    
+                    q.push({prod, steps+1});
+                }
+            }
+        }
+        
+        return -1;
+        
+    }
+};
